@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<canvas width="340" height="300" id="relation"></canvas>
+
+<script src="js/jquery-2.1.4.js"></script>
+<script src="js/jtopo-0.4.8-min.js"></script>
+<script>
+    $(document).ready(function() {
+        var gxData={
+            user:{img:'img/6.png'},
+            other:[
+                {x:200,y:33,size:56,img:'img/1.png',relation:'家人',url:'#'},
+                {x:270,y:36,size:45,img:'img/2.png',relation:'家人',url:'#'},
+                {x:258,y:136,size:52,img:'img/3.png',relation:'朋友',url:'#'},
+                {x:232,y:245,size:44,img:'img/4.png',relation:'朋友',url:'#'},
+                {x:142,y:221,size:55,img:'img/5.png',relation:'朋友',url:'#'},
+                {x:33,y:231,size:52,img:'img/6.png',relation:'同学',url:'#'},
+                {x:44,y:115,size:42,img:'img/1.png',relation:'同学',url:'#'},
+                {x:108,y:30,size:49,img:'img/2.png',relation:'同学',url:'#'},
+            ]
+        }
+        create(gxData);
+    });
+
+    function create(gxData){
+        var canvas = document.getElementById('relation');
+        var stage = new JTopo.Stage(canvas); // 创建一个舞台对象
+        var scene = new JTopo.Scene(stage); // 创建一个场景对象
+        scene.backgroundColor="#000";
+        var userNode = new JTopo.Node(); // 创建一个节点
+        userNode.setBound(137, 117, 66, 66); // 同时设置大小及位置
+        userNode.showSelected = false; // 不显示选中矩形
+        userNode.setImage(gxData.user.img); // 设置图片
+        scene.add(userNode); // 放入到场景中
+
+        var num=gxData.other.length,jr=true,py=true,ts=true;
+        for(var i=0;i<num;i++){
+            var otherNode = new JTopo.Node(); // 创建一个节点
+            otherNode.setBound(gxData.other[i].x, gxData.other[i].y,gxData.other[i].size, gxData.other[i].size); // 同时设置大小及位置
+            otherNode.borderRadius = 50; // 圆角
+            otherNode.setImage(gxData.other[i].img, false); // 设置图片
+            otherNode.showSelected = false; // 不显示选中矩形
+            scene.add(otherNode); // 放入到场景中
+            otherNode.url=gxData.other[i].url;
+            otherNode.click(function(event){
+                window.location.href=event.target.url;
+            });
+
+            var link;
+            if(gxData.other[i].relation=="家人"){
+                if(jr==true){
+                    jr=false;
+                    link = new JTopo.Link(userNode, otherNode,gxData.other[i].relation); // 增加连线
+                }else{
+                    link = new JTopo.Link(userNode, otherNode); // 增加连线
+                }
+                link.strokeColor ='235, 175, 66';
+            }else if(gxData.other[i].relation=="同学"){
+                if(ts==true){
+                    ts=false;
+                    link = new JTopo.Link(userNode, otherNode,gxData.other[i].relation); // 增加连线
+                }else{
+                    link = new JTopo.Link(userNode, otherNode); // 增加连线
+                }
+                link.strokeColor ='242, 75, 74';
+            }else if(gxData.other[i].relation=="朋友"){
+                if(py==true){
+                    py=false;
+                    link = new JTopo.Link(userNode, otherNode,gxData.other[i].relation); // 增加连线
+                }else{
+                    link = new JTopo.Link(userNode, otherNode); // 增加连线
+                }
+                link.strokeColor ="61, 124, 201";
+            }
+            scene.add(link);
+        }
+
+    }
+</script>
+</body>
+</html>
